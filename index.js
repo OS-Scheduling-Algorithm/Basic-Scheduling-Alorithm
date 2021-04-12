@@ -10,42 +10,145 @@ var pArrivalTime = document.getElementById("pArrivalTime");
 var pBurstTime = document.getElementById("pBurstTime");
 var index = 0;
 
+
+let k = 0;
+
 var pArray = Array.from(Array(15), () => new Array(2));
-var pWaitingTime = Array.from({length:10}, ()=>0);
-var pTurnAroundTime = new Array(10);
-var pNormalizedTT = new Array(10);
+var pArray_copy = Array.from(Array(15), () => new Array(2));
+var pWaitingTime = Array.from({ length: 15 }, () => 0);
+var pTurnAroundTime = new Array(15);
+var pNormalizedTT = new Array(15);
 var time = new Array(1000);
 var selectedAlgorithm;
 var totalTime = 0;
 
 let row1 = table3.insertRow(0);
 let row2 = table3.insertRow(1);
-var z=0;
+var z = 0;
 
 var timeQuantum;
 
 class Queue {
-    constructor(){
+    constructor() {
         this._arr = [];
     }
-    enqueue(item){
+    enqueue(item) {
         this._arr.push(item);
     }
-    dequeue(){
+    dequeue() {
         return this._arr.shift();
+    }
+    isEmpty() {
+        return this._arr.length === 0;
     }
 }
 
 const q = new Queue();
 
-function getTotalTime(){
-    for(var i=0;i<index;i++){
+function getTotalTime() {
+    for (var i = 0; i < index; i++) {
         totalTime += Number(pArray[i][2]);
     }
 }
 
-function addRow(){
-    let row = table1.insertRow(index+1);
+function addToQueue_rr() {
+    for (var i = 0; i < 20; i++) {
+        for (var j = index - 1; j >= 0; j--) {
+            if (i === pArray_copy[j][1]) {
+                q.enqueue(pArray_copy[j]);
+                run();
+            }
+        }
+    }
+}
+
+function run() {
+    let remainBT
+    while (!q.isEmpty()) {
+        x = q.dequeue();
+        remainBT = x[2];
+        let p = Number(k);
+        if (remainBT < timeQuantum) {
+            for (var j = 0; j < x[2]; j++) {
+                time[k] = x[0];
+                remainBT--;
+                k++;
+            }
+        } else {
+            for (var j = 0; j < timeQuantum; j++) {
+                time[k] = x[0];
+                remainBT--;
+                k++;
+            }
+        }
+        if (remainBT > 0) {
+            for (var i = 0; i < index; i++) {
+                if (x[0] == pArray_copy[i][0]) {
+                    pArray_copy[i][1] = p + timeQuantum;
+                    pArray_copy[i][2] = remainBT;
+                }
+            }
+        }
+    }
+}
+
+function getOutputTable_rr() {
+    for (var i = 0; i < 20; i++) {
+        if (time[i] === pArray[0][0]) {
+            pTurnAroundTime[0] = Number(i + 1);
+        }
+        if (time[i] === pArray[1][0]) {
+            pTurnAroundTime[1] = Number(i + 1);
+        }
+        if (time[i] === pArray[2][0]) {
+            pTurnAroundTime[2] = Number(i + 1);
+        }
+        if (time[i] === pArray[3][0]) {
+            pTurnAroundTime[3] = Number(i + 1);
+        }
+        if (time[i] === pArray[4][0]) {
+            pTurnAroundTime[4] = Number(i + 1);
+        }
+        if (time[i] === pArray[5][0]) {
+            pTurnAroundTime[0] = Number(i + 1);
+        }
+        if (time[i] === pArray[6][0]) {
+            pTurnAroundTime[1] = Number(i + 1);
+        }
+        if (time[i] === pArray[7][0]) {
+            pTurnAroundTime[2] = Number(i + 1);
+        }
+        if (time[i] === pArray[8][0]) {
+            pTurnAroundTime[3] = Number(i + 1);
+        }
+        if (time[i] === pArray[9][0]) {
+            pTurnAroundTime[4] = Number(i + 1);
+        }
+        if (time[i] === pArray[10][0]) {
+            pTurnAroundTime[0] = Number(i + 1);
+        }
+        if (time[i] === pArray[11][0]) {
+            pTurnAroundTime[1] = Number(i + 1);
+        }
+        if (time[i] === pArray[12][0]) {
+            pTurnAroundTime[2] = Number(i + 1);
+        }
+        if (time[i] === pArray[13][0]) {
+            pTurnAroundTime[3] = Number(i + 1);
+        }
+        if (time[i] === pArray[14][0]) {
+            pTurnAroundTime[4] = Number(i + 1);
+        }
+    }
+    for (var i = 0; i < index; i++) {
+        pWaitingTime[i] = pTurnAroundTime[i] - pArray[i][1] - pArray[i][2];
+        pTurnAroundTime[i] = pWaitingTime[i] + pArray[i][2];
+        pNormalizedTT[i] = pTurnAroundTime[i] / pArray[i][2];
+    }
+}
+
+function addRow() {
+    let row = table1.insertRow(index + 1);
     let cell1 = row.insertCell(0);
     let text1 = document.createTextNode(pName.value);
     let cell2 = row.insertCell(1);
@@ -57,56 +160,60 @@ function addRow(){
     cell3.appendChild(text3);
     pArray[index][0] = pName.value;
     pArray[index][1] = Number(pArrivalTime.value);
-    pArray[index][2] = pBurstTime.value;
+    pArray[index][2] = Number(pBurstTime.value);
+    pArray_copy[index][0] = pName.value;
+    pArray_copy[index][1] = Number(pArrivalTime.value);
+    pArray_copy[index][2] = Number(pBurstTime.value);
+    console.log(pArray[index][0], pArray[index][1], pArray[index][2]);
     index = index + 1;
 }
 
-function addToQueue(){
-    for(let i=0;i<20;i++){
-        for(let j=0;j<index;j++){
-            if(i === Number(pArray[j][1])){
+function addToQueue() {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < index; j++) {
+            if (i === Number(pArray[j][1])) {
                 q.enqueue(pArray[j]);
             }
         }
     }
 }
 
-function getProcessor(){
-    let k = 0;
-    for(let j = 0;j<index;j++){
-        let x = q.dequeue(); 
-        for(let i=0;i<x[2];i++){
+function getProcessor() {
+    for (let j = 0; j < index; j++) {
+        let x = q.dequeue();
+        for (let i = 0; i < x[2]; i++) {
             time[k] = x[0];
             k++;
         }
     }
 }
 
-function getPWT(){
-    for(var i=1;i<index;i++){
-        for(var j=0;j<i;j++){
+function getPWT() {
+    for (var i = 1; i < index; i++) {
+        for (var j = 0; j < i; j++) {
             pWaitingTime[i] += Number(pArray[j][2]);
         }
         pWaitingTime[i] -= pArray[i][1];
     }
 }
-function getPTAT(){
-    for(var i=0;i<index;i++){
-        pTurnAroundTime[i] = Number(pArray[i][2])+pWaitingTime[i];
+
+function getPTAT() {
+    for (var i = 0; i < index; i++) {
+        pTurnAroundTime[i] = Number(pArray[i][2]) + pWaitingTime[i];
     }
 }
 
-function getPNTT(){
-    for(var i=0;i<index;i++){
-        pNormalizedTT[i] = pTurnAroundTime[i]/Number(pArray[i][2]);
+function getPNTT() {
+    for (var i = 0; i < index; i++) {
+        pNormalizedTT[i] = pTurnAroundTime[i] / Number(pArray[i][2]);
     }
 }
 
-function addVisual(){
-    if(z<totalTime){
+function addVisual() {
+    if (z < totalTime) {
         let cell1 = row1.insertCell(z);
         let cell2 = row2.insertCell(z);
-        let text1 = document.createTextNode(z+1);
+        let text1 = document.createTextNode(z + 1);
         let text2 = document.createTextNode(time[z]);
         cell1.appendChild(text1);
         cell2.appendChild(text2);
@@ -115,9 +222,9 @@ function addVisual(){
     setPColor(z);
 }
 
-function addOutput(){
-    for(var i=0;i<index;i++){
-        let row = table2.insertRow(i+1);
+function addOutput() {
+    for (var i = 0; i < index; i++) {
+        let row = table2.insertRow(i + 1);
         let cell1 = row.insertCell(0);
         let text1 = document.createTextNode(pArray[i][0]);
         let cell2 = row.insertCell(1);
@@ -139,48 +246,82 @@ function addOutput(){
     }
 }
 
-function setPColor(z){
-    for(let i=0; i<(z*2);i++){
-        if(table3.getElementsByTagName("td")[i].innerHTML === "p1"){
+function setPColor(z) {
+    for (let i = 0; i < (z * 2); i++) {
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[0][0]) {
             table3.getElementsByTagName("td")[i].style.backgroundColor = "lightpink";
         }
-        if(table3.getElementsByTagName("td")[i].innerHTML === "p2"){
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[1][0]) {
             table3.getElementsByTagName("td")[i].style.backgroundColor = "lightcoral";
         }
-        if(table3.getElementsByTagName("td")[i].innerHTML === "p3"){
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[2][0]) {
             table3.getElementsByTagName("td")[i].style.backgroundColor = "skyblue";
         }
-        if(table3.getElementsByTagName("td")[i].innerHTML === "p4"){
-            table3.getElementsByTagName("td")[i].style.backgroundColor = "salmon";
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[3][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "yellow";
         }
-        if(table3.getElementsByTagName("td")[i].innerHTML === "p5"){
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[4][0]) {
             table3.getElementsByTagName("td")[i].style.backgroundColor = "paleturquoise";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[5][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "aliceblue";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[6][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "blueviolet";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[7][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "cadetblue";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[8][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "cornflowerblue";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[9][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "brown";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[10][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "chocolate";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[11][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "cyan";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[12][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "darkslategray";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[13][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "hotpink";
+        }
+        if (table3.getElementsByTagName("td")[i].innerHTML === pArray[14][0]) {
+            table3.getElementsByTagName("td")[i].style.backgroundColor = "khaki";
         }
     }
 }
 
-function showHiddenTables(){
+function showHiddenTables() {
     table2.classList.remove("noShowing");
     table3.classList.remove("noShowing");
 }
 
-function getSelectedAlgorithm(){
+function getSelectedAlgorithm() {
     const algorithmNodeList = document.getElementsByName("schedulingAlgorithm");
-    algorithmNodeList.forEach((node)=>{
-        if(node.checked){
+    algorithmNodeList.forEach((node) => {
+        if (node.checked) {
             selectedAlgorithm = node.value;
         }
     })
 }
 
-function sortArray(){
-    pArray.sort(function(a,b){
+function sortArray() {
+    pArray.sort(function(a, b) {
         return a[1] - b[1];
     });
 }
 
-function runAlgorithm(){
-    if(selectedAlgorithm === "fcfs"){
+function getTimeQuantum() {
+    timeQuantum = Number(timeQuantumInput.value);
+}
+
+function runAlgorithm() {
+    if (selectedAlgorithm === "fcfs") {
         addToQueue();
         getProcessor();
         getPWT();
@@ -190,25 +331,28 @@ function runAlgorithm(){
         addOutput();
         setInterval(addVisual, 300);
 
-    }
-    else if(selectedAlgorithm === "rr"){
-        timeQuantum = timeQuantumInput.value;
-        console.log(timeQuantum);
+    } else if (selectedAlgorithm === "rr") {
+        getTimeQuantum();
+        addToQueue_rr();
+        showHiddenTables();
+        getOutputTable_rr();
+        addOutput();
+        setInterval(addVisual, 300);
     }
 }
 
-function handleButtonSimulate(){
+function handleButtonSimulate() {
     getSelectedAlgorithm();
     sortArray();
     getTotalTime();
     runAlgorithm();
 }
 
-function handleRR(){
+function handleRR() {
     document.querySelector(".timeQuantum").classList.remove("noShowing");
 }
 
-function init(){
+function init() {
     button.addEventListener("click", addRow);
     button_start.addEventListener("click", handleButtonSimulate);
     rr.addEventListener("click", handleRR);
