@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> <!--영어를 기본 언어로 지정-->
+
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -7,39 +8,40 @@
     <link rel="stylesheet" href="index.css" />
     <title>Basic Scheduling Algorithm Simulator</title>
   </head>
+
   <body>
-    <table class="insert_table">
-      <tr>
-        <td>Name</td>
-        <td>Arrival Time</td>
-        <td>Burst Time</td>
+    <table class="insert_table"> <!--프로세스의 이름, AT, BT에 대해 입력받는 테이블-->
+      <tr> <!--talbe에서 가로줄을 만드는 태그-->
+        <td>Name</td><!--처음에 지정되어있는 Name 적어진 것 / td 태그는 셀을 만듬-->
+        <td>Arrival Time</td><!--처음에 지정되어있는 Arrival Time 적어진 것 / td 태그는 셀을 만듬-->
+        <td>Burst Time</td><!--처음에 지정되어있는 Burst Time 적어진 것 / td 태그는 셀을 만듬-->
       </tr>
-      <tr>
-        <td><input type="text" id="pName" /><br /></td>
-        <td><input type="text" id="pArrivalTime" /><br /></td>
-        <td><input type="text" id="pBurstTime" /><br /></td>
+      <tr> <!--talbe에서 가로줄을 만드는 태그-->
+        <td><input type="text" id="pName" /><br /></td> <!--프로세스의 이름을 입력받음-->
+        <td><input type="text" id="pArrivalTime" /><br /></td> <!--프로세스의 AT를 입력받음-->
+        <td><input type="text" id="pBurstTime" /><br /></td> <!--프로세스의 BT를 입력받음-->
       </tr>
     </table>
 
-    <input type="button" id="btn_addRow" value="Add Row" /><br />
+    <input type="button" id="btn_addRow" value="Add Row" /><br /> <!--add row라고 적어진 버튼 -->
 
-    <div>
+    <div> <!--스케줄링 알고리즘을 선택하기 위한 radio-->
       <input type="radio" name="schedulingAlgorithm" value="fcfs" /> FCFS
       <input type="radio" name="schedulingAlgorithm" value="rr" id="rr" /> RR
       <input type="radio" name="schedulingAlgorithm" value="spn" /> SPN
       <input type="radio" name="schedulingAlgorithm" value="srtn" /> SRTN
       <input type="radio" name="schedulingAlgorithm" value="hrrn" /> HRRN
       <input type="radio" name="schedulingAlgorithm" value="new" /> NEW
-      <div class="timeQuantum noShowing">
-        Time Quantum:<input type="text" id="timeQuantum-input" />
+      <div class="timeQuantum noShowing"> <!--radio에서 RR 선택했을때 Time Quantum을 입력받을 수 있는 Text 보여주기-->
+        Time Quantum:<input type="text" id="timeQuantum-input" /> <!--TimeQuantum을 입력받을 Text-->
       </div>
     </div>
-    <input type="button" id="btn_simulate" value="Simulate" />
+    <input type="button" id="btn_simulate" value="Simulate" /> <!--시뮬레이션 실행-->
 
-    <div id="box"><table class="visual_table noShowing"></table></div>
+    <div id="box"><table class="visual_table noShowing"></table></div> <!--프로세스가 실행되는 순서를 보여주는 부분-->
 
-    <table class="output_table noShowing">
-      <tr>
+    <table class="output_table noShowing"> <!--최종적으로 프로세스의 정보를 보여주는 테이블-->
+      <tr> <!--talbe에서 가로줄을 만드는 태그-->
         <td>Name</td>
         <td>Arrival Time</td>
         <td>Burst Time</td>
